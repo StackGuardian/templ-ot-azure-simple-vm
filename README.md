@@ -6,6 +6,20 @@ OpenTofu demo template. Standalone, no dependency on other repos. Compatible wit
 
 ## Architecture
 
+```mermaid
+flowchart LR
+  cidr([Allowed CIDRs]) -.->|opt-in, SSH| pip[Public IP, opt-in]
+  subgraph rg[Resource group]
+    subgraph vnet[VNet]
+      subgraph sn[VM subnet + NSG]
+        vm[Linux VM, Trusted Launch]
+      end
+    end
+    pip -.-> vm
+    vnet -.->|optional flow logs| st[(Storage account)]
+  end
+```
+
 - Resource group
 - VNet with one subnet (default outbound access disabled) and an NSG
 - Linux VM (Ubuntu 24.04 LTS, Trusted Launch) with a NIC and a system-assigned managed identity
@@ -97,8 +111,9 @@ tofu destroy
 
 ## Tests
 
-Unit tests run with mocked providers on every push and pull request. Integration tests deploy real
-resources and run manually through the `integration` workflow. They need the repository variables `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_SUBSCRIPTION_ID` (app registration with a federated credential for GitHub OIDC).
+The GitLab pipeline (`.gitlab-ci.yml`) lints every push. Merge requests into `development` or `main` also run
+validation, the checkov scan and the unit tests. A tag runs all of these plus the integration tests, which deploy
+real resources and destroy them again, and then creates a release. Integration tests run only when the CI/CD variables `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_SUBSCRIPTION_ID` are set: an app registration with a federated credential for GitLab OIDC and the audience `api://AzureADTokenExchange`.
 
 ```bash
 tofu test -test-directory=tests/unit

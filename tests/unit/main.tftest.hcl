@@ -225,3 +225,15 @@ run "flow_logs_with_network_watcher" {
     error_message = "The flow log storage account must enforce TLS 1.2 and block public access."
   }
 }
+
+# U-13
+run "broad_cidr_is_rejected" {
+  command = plan
+
+  variables {
+    enable_public_ip      = true
+    allowed_ingress_cidrs = ["128.0.0.0/1"]
+  }
+
+  expect_failures = [var.allowed_ingress_cidrs]
+}

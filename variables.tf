@@ -47,6 +47,11 @@ variable "admin_username" {
 variable "ssh_public_key" {
   description = "SSH public key for the admin user. Password login is disabled."
   type        = string
+
+  validation {
+    condition     = can(regex("^(ssh-(rsa|ed25519)|ecdsa-sha2-nistp[0-9]+) ", var.ssh_public_key))
+    error_message = "Must be an OpenSSH public key, for example ssh-ed25519 AAAA..."
+  }
 }
 
 variable "enable_public_ip" {
@@ -66,8 +71,8 @@ variable "allowed_ingress_cidrs" {
   }
 
   validation {
-    condition     = !anytrue([for c in var.allowed_ingress_cidrs : endswith(c, "/0")])
-    error_message = "Open-to-the-internet CIDRs like 0.0.0.0/0 are not allowed."
+    condition     = alltrue([for c in var.allowed_ingress_cidrs : try(tonumber(split("/", c)[1]) >= 8, false)])
+    error_message = "CIDRs broader than /8, such as 0.0.0.0/0, are not allowed."
   }
 }
 
@@ -101,4 +106,9 @@ variable "log_retention_days" {
   description = "Retention of the VNet flow logs"
   type        = number
   default     = 90
+
+  validation {
+    condition     = var.log_retention_days >= 0 && var.log_retention_days <= 365
+    error_message = "Flow log retention must be between 0 (keep forever) and 365 days."
+  }
 }
