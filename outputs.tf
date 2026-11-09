@@ -25,5 +25,5 @@ output "public_ip" {
 
 output "ssh_command" {
   description = "SSH command, null unless the public IP is enabled"
-  value       = var.enable_public_ip ? "ssh ${var.admin_username}@${one(azurerm_public_ip.this[*].ip_address)}" : null
+  value       = var.advanced_settings.enable_public_ip ? "ssh ${var.advanced_settings.admin_username}@${one(azurerm_public_ip.this[*].ip_address)}" : null
 }

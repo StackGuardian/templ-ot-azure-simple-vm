@@ -1,18 +1,14 @@
 name_prefix = "demo"
 location = "germanywestcentral"
 
-tags = {
-  Owner = "your-name"
-}
 ssh_public_key = "ssh-ed25519 AAAA... you@example.com"
 
-# Optional public IP. Inbound traffic is limited to these CIDRs.
-# enable_public_ip      = true
-# allowed_ingress_cidrs = ["203.0.113.10/32"]
-# allowed_ingress_ports = [22]
-
-# Optional VNet flow logs. Uses the existing Network Watcher of the region.
-# network_watcher = {
-#   name                = "NetworkWatcher_germanywestcentral"
-#   resource_group_name = "NetworkWatcherRG"
-# }
+advanced_settings = {
+  tags = {
+    Owner = "your-name"
+  }
+  # Optional public IP. Inbound traffic is open to 0.0.0.0/0 on port 22 by default; limit it here.
+  # enable_public_ip      = true
+  # allowed_ingress_cidrs = ["203.0.113.10/32"]
+  # allowed_ingress_ports = [22]
+}

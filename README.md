@@ -16,7 +16,6 @@ flowchart LR
       end
     end
     pip -.-> vm
-    vnet -.->|optional flow logs| st[(Storage account)]
   end
 ```
 
@@ -24,7 +23,6 @@ flowchart LR
 - VNet with one subnet (default outbound access disabled) and an NSG
 - Linux VM (Ubuntu 24.04 LTS, Trusted Launch) with a NIC and a system-assigned managed identity
 - Standard public IP (only when `enable_public_ip = true`)
-- VNet flow logs to a storage account (only when `network_watcher` is set)
 
 ## Security
 
@@ -33,19 +31,13 @@ flowchart LR
 - Managed disks encrypted at rest with platform-managed keys. Encryption at host is optional (`encryption_at_host_enabled`)
 - VM extensions disabled
 - Default: no public IP, no inbound NSG rules, no default outbound internet access
-- Public IP only on opt-in. Inbound traffic limited to `allowed_ingress_cidrs` and `allowed_ingress_ports`; `0.0.0.0/0` is rejected
-- VNet flow logs (optional). Network Watcher exists only once per region and subscription, so the template uses an existing one instead of creating it. The flow log storage account enforces TLS 1.2, blocks public blob access, denies network access except trusted Azure services and keeps deleted blobs for 7 days
+- Public IP only on opt-in. Inbound traffic is limited to `allowed_ingress_cidrs` and `allowed_ingress_ports`, by default port 22 from `0.0.0.0/0`. Limit the CIDRs for anything beyond a short demo
 
 Accepted checkov findings (documented inline in the code):
 
 | Check | Reason |
 |---|---|
 | CKV_AZURE_119, CKV2_AZURE_39 | Public IP is opt-in and limited to allowed CIDRs |
-| CKV_AZURE_59, CKV2_AZURE_33 | Flow log storage: firewall denies everything except trusted Azure services, private endpoint is out of scope |
-| CKV_AZURE_206 | LRS is enough for demo flow logs |
-| CKV_AZURE_33 | Queue service is not used |
-| CKV2_AZURE_1 | Microsoft-managed keys, customer-managed keys are out of scope |
-| CKV2_AZURE_40, CKV2_AZURE_41 | Provider needs shared key access, SAS tokens are not used |
 
 ## Usage
 
@@ -63,7 +55,7 @@ tofu apply
 Without a public IP, connect through Azure Bastion (not part of this template) or from inside the VNet.
 The VM has no default outbound internet access, so package updates need a NAT gateway or a public IP.
 
-With `enable_public_ip = true`, SSH from an allowed CIDR:
+With `advanced_settings.enable_public_ip = true`, SSH from an allowed CIDR:
 
 ```bash
 ssh azureuser@<public_ip>
@@ -76,17 +68,21 @@ ssh azureuser@<public_ip>
 |---|---|---|
 | `name_prefix` | Prefix for all resource names | `"demo"` |
 | `location` | Azure location | `"germanywestcentral"` |
-| `tags` | Additional tags for all resources | `{}` |
 | `ssh_public_key` | SSH public key for the admin user (required) | none |
 | `vm_size` | VM size, must support Trusted Launch | `"Standard_B2s_v2"` |
+| `advanced_settings` | Object with the settings below, all optional | `{}` |
+
+`advanced_settings` attributes (shown as "Advanced Settings" in the StackGuardian form):
+
+| Name | Description | Default |
+|---|---|---|
 | `vnet_cidr` | Address space of the VNet | `"10.0.0.0/16"` |
 | `admin_username` | Admin user | `"azureuser"` |
 | `enable_public_ip` | Attach a Standard public IP | `false` |
-| `allowed_ingress_cidrs` | Allowed source CIDRs, required with a public IP, `/0` rejected | `[]` |
+| `allowed_ingress_cidrs` | Allowed source CIDRs, at least one with a public IP | `["0.0.0.0/0"]` |
 | `allowed_ingress_ports` | Opened TCP ports | `[22]` |
 | `encryption_at_host_enabled` | Encryption at host (needs the subscription feature) | `false` |
-| `network_watcher` | Existing Network Watcher (`name`, `resource_group_name`) for flow logs | `null` |
-| `log_retention_days` | Flow log retention | `90` |
+| `tags` | Additional tags for all resources | `{}` |
 
 ## Outputs
 
@@ -101,7 +97,7 @@ ssh azureuser@<public_ip>
 
 ## Cost
 
-The VM is billed hourly. A Standard public IP is billed while it exists. Flow logs bill storage and Network Watcher processing.
+The VM is billed hourly. A Standard public IP is billed while it exists.
 
 **Destroy after the demo:**
 

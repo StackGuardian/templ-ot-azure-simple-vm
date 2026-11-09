@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "this" {
-  count = var.enable_public_ip ? 1 : 0
+  count = var.advanced_settings.enable_public_ip ? 1 : 0
 
   name                = "${var.name_prefix}-vm-pip"
   location            = azurerm_resource_group.this.location
@@ -30,17 +30,17 @@ resource "azurerm_linux_virtual_machine" "this" {
   location                        = azurerm_resource_group.this.location
   resource_group_name             = azurerm_resource_group.this.name
   size                            = var.vm_size
-  admin_username                  = var.admin_username
+  admin_username                  = var.advanced_settings.admin_username
   disable_password_authentication = true
   network_interface_ids           = [azurerm_network_interface.vm.id]
   secure_boot_enabled             = true
   vtpm_enabled                    = true
-  encryption_at_host_enabled      = var.encryption_at_host_enabled
+  encryption_at_host_enabled      = var.advanced_settings.encryption_at_host_enabled
   allow_extension_operations      = false
   tags                            = local.tags
 
   admin_ssh_key {
-    username   = var.admin_username
+    username   = var.advanced_settings.admin_username
     public_key = var.ssh_public_key
   }
 
@@ -65,7 +65,7 @@ resource "azurerm_linux_virtual_machine" "this" {
 
   lifecycle {
     precondition {
-      condition     = !var.enable_public_ip || length(var.allowed_ingress_cidrs) > 0
+      condition     = !var.advanced_settings.enable_public_ip || length(var.advanced_settings.allowed_ingress_cidrs) > 0
       error_message = "allowed_ingress_cidrs must be set when enable_public_ip is true."
     }
   }

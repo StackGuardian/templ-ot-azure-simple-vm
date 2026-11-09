@@ -15,33 +15,10 @@ variable "location" {
   default     = "germanywestcentral"
 }
 
-variable "tags" {
-  description = "Additional tags for all resources"
-  type        = map(string)
-  default     = {}
-}
-
 variable "vm_size" {
   description = "VM size. Must support Trusted Launch (Gen2)."
   type        = string
   default     = "Standard_B2s_v2"
-}
-
-variable "vnet_cidr" {
-  description = "Address space of the VNet"
-  type        = string
-  default     = "10.0.0.0/16"
-
-  validation {
-    condition     = can(cidrnetmask(var.vnet_cidr))
-    error_message = "Must be a valid IPv4 CIDR block."
-  }
-}
-
-variable "admin_username" {
-  description = "Admin user on the VM"
-  type        = string
-  default     = "azureuser"
 }
 
 variable "ssh_public_key" {
@@ -54,61 +31,33 @@ variable "ssh_public_key" {
   }
 }
 
-variable "enable_public_ip" {
-  description = "Attach a Standard public IP to the VM"
-  type        = bool
-  default     = false
-}
-
-variable "allowed_ingress_cidrs" {
-  description = "IPv4 CIDRs allowed to reach the VM when the public IP is enabled"
-  type        = list(string)
-  default     = []
-
-  validation {
-    condition     = alltrue([for c in var.allowed_ingress_cidrs : can(cidrnetmask(c))])
-    error_message = "All entries must be valid IPv4 CIDR blocks."
-  }
-
-  validation {
-    condition     = alltrue([for c in var.allowed_ingress_cidrs : try(tonumber(split("/", c)[1]) >= 8, false)])
-    error_message = "CIDRs broader than /8, such as 0.0.0.0/0, are not allowed."
-  }
-}
-
-variable "allowed_ingress_ports" {
-  description = "TCP ports opened for allowed_ingress_cidrs when the public IP is enabled"
-  type        = list(number)
-  default     = [22]
-
-  validation {
-    condition     = alltrue([for p in var.allowed_ingress_ports : p >= 1 && p <= 65535])
-    error_message = "Ports must be between 1 and 65535."
-  }
-}
-
-variable "encryption_at_host_enabled" {
-  description = "Encrypt temp disk and caches on the host. Needs the EncryptionAtHost feature registered in the subscription."
-  type        = bool
-  default     = false
-}
-
-variable "network_watcher" {
-  description = "Existing Network Watcher for VNet flow logs (one per region and subscription). Null disables flow logs."
+# Grouped so the StackGuardian form can show them in one "Advanced Settings" section.
+variable "advanced_settings" {
+  description = "Settings most deployments keep at their defaults"
   type = object({
-    name                = string
-    resource_group_name = string
+    vnet_cidr                  = optional(string, "10.0.0.0/16")       # Address space of the VNet
+    admin_username             = optional(string, "azureuser")         # Admin user on the VM
+    enable_public_ip           = optional(bool, false)                 # Attach a Standard public IP to the VM
+    allowed_ingress_cidrs      = optional(list(string), ["0.0.0.0/0"]) # IPv4 CIDRs allowed to reach the VM when the public IP is enabled
+    allowed_ingress_ports      = optional(list(number), [22])          # TCP ports opened for allowed_ingress_cidrs when the public IP is enabled
+    encryption_at_host_enabled = optional(bool, false)                 # Needs the EncryptionAtHost feature registered in the subscription
+    tags                       = optional(map(string), {})             # Additional tags for all resources
   })
-  default = null
-}
-
-variable "log_retention_days" {
-  description = "Retention of the VNet flow logs"
-  type        = number
-  default     = 90
+  default  = {}
+  nullable = false
 
   validation {
-    condition     = var.log_retention_days >= 0 && var.log_retention_days <= 365
-    error_message = "Flow log retention must be between 0 (keep forever) and 365 days."
+    condition     = can(cidrnetmask(var.advanced_settings.vnet_cidr))
+    error_message = "vnet_cidr must be a valid IPv4 CIDR block."
+  }
+
+  validation {
+    condition     = alltrue([for c in var.advanced_settings.allowed_ingress_cidrs : can(cidrnetmask(c))])
+    error_message = "All entries in allowed_ingress_cidrs must be valid IPv4 CIDR blocks."
+  }
+
+  validation {
+    condition     = alltrue([for p in var.advanced_settings.allowed_ingress_ports : p >= 1 && p <= 65535])
+    error_message = "Ports must be between 1 and 65535."
   }
 }

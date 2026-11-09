@@ -83,8 +83,10 @@ run "custom_tags_are_merged" {
   command = plan
 
   variables {
-    tags = {
-      Owner = "tester"
+    advanced_settings = {
+      tags = {
+        Owner = "tester"
+      }
     }
   }
 
@@ -149,22 +151,13 @@ run "public_ip_without_cidrs_is_rejected" {
   command = plan
 
   variables {
-    enable_public_ip = true
+    advanced_settings = {
+      enable_public_ip      = true
+      allowed_ingress_cidrs = []
+    }
   }
 
   expect_failures = [azurerm_linux_virtual_machine.this]
-}
-
-# U-09
-run "open_cidr_is_rejected" {
-  command = plan
-
-  variables {
-    enable_public_ip      = true
-    allowed_ingress_cidrs = ["0.0.0.0/0"]
-  }
-
-  expect_failures = [var.allowed_ingress_cidrs]
 }
 
 # U-10
@@ -172,9 +165,11 @@ run "public_ingress_is_restricted" {
   command = apply
 
   variables {
-    enable_public_ip      = true
-    allowed_ingress_cidrs = ["203.0.113.0/24"]
-    allowed_ingress_ports = [22]
+    advanced_settings = {
+      enable_public_ip      = true
+      allowed_ingress_cidrs = ["203.0.113.0/24"]
+      allowed_ingress_ports = [22]
+    }
   }
 
   assert {
@@ -191,49 +186,21 @@ run "public_ingress_is_restricted" {
   }
 }
 
-# U-11
-run "flow_logs_are_off_without_network_watcher" {
-  command = apply
-
-  assert {
-    condition     = length(azurerm_network_watcher_flow_log.this) == 0
-    error_message = "Flow logs must not be created without a Network Watcher."
-  }
-}
-
-# U-12
-run "flow_logs_with_network_watcher" {
+# U-09
+run "public_ip_defaults_open_ssh_to_any" {
   command = apply
 
   variables {
-    network_watcher = {
-      name                = "NetworkWatcher_germanywestcentral"
-      resource_group_name = "NetworkWatcherRG"
+    advanced_settings = {
+      enable_public_ip = true
     }
   }
 
   assert {
     condition = (
-      length(azurerm_network_watcher_flow_log.this) == 1 &&
-      azurerm_network_watcher_flow_log.this[0].target_resource_id == azurerm_virtual_network.this.id
+      length(azurerm_network_security_rule.public) == 1 &&
+      alltrue([for r in azurerm_network_security_rule.public : r.source_address_prefix == "0.0.0.0/0" && r.destination_port_range == "22"])
     )
-    error_message = "VNet flow logs must target the VNet."
+    error_message = "With a public IP and default settings, port 22 must be open to 0.0.0.0/0."
   }
-
-  assert {
-    condition     = azurerm_storage_account.flow_logs[0].min_tls_version == "TLS1_2" && !azurerm_storage_account.flow_logs[0].allow_nested_items_to_be_public
-    error_message = "The flow log storage account must enforce TLS 1.2 and block public access."
-  }
-}
-
-# U-13
-run "broad_cidr_is_rejected" {
-  command = plan
-
-  variables {
-    enable_public_ip      = true
-    allowed_ingress_cidrs = ["128.0.0.0/1"]
-  }
-
-  expect_failures = [var.allowed_ingress_cidrs]
 }
