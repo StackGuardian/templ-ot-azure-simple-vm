@@ -1,0 +1,20 @@
+{
+  "ui:order": [
+    "ssh_public_key",
+    "name_prefix",
+    "location",
+    "vm_size",
+    "advanced_settings"
+  ],
+  "advanced_settings": {
+    "ui:title": "Advanced Settings",
+    "ui:description": "Optional settings, most deployments keep the defaults",
+    "ui:order": [
+      "show_advanced_settings",
+      "*"
+    ]
+  },
+  "ssh_public_key": {
+    "ui:widget": "textarea"
+  }
+}

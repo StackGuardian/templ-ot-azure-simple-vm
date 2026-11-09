@@ -1,0 +1,274 @@
+{
+  "type": "object",
+  "required": [
+    "ssh_public_key"
+  ],
+  "properties": {
+    "name_prefix": {
+      "title": "Name prefix",
+      "type": "string",
+      "description": "Prefix for all resource names",
+      "default": "demo",
+      "pattern": "^[a-z][a-z0-9-]{1,15}$"
+    },
+    "location": {
+      "title": "Location",
+      "type": "string",
+      "description": "Azure location",
+      "default": "germanywestcentral",
+      "enum": [
+        "australiacentral",
+        "australiacentral2",
+        "australiaeast",
+        "australiasoutheast",
+        "austriaeast",
+        "belgiumcentral",
+        "brazilsouth",
+        "brazilsoutheast",
+        "canadacentral",
+        "canadaeast",
+        "centralindia",
+        "centralus",
+        "chilecentral",
+        "denmarkeast",
+        "eastasia",
+        "eastus",
+        "eastus2",
+        "francecentral",
+        "francesouth",
+        "germanynorth",
+        "germanywestcentral",
+        "indonesiacentral",
+        "israelcentral",
+        "italynorth",
+        "japaneast",
+        "japanwest",
+        "jioindiacentral",
+        "jioindiawest",
+        "koreacentral",
+        "koreasouth",
+        "malaysiawest",
+        "mexicocentral",
+        "newzealandnorth",
+        "northcentralus",
+        "northeurope",
+        "norwayeast",
+        "norwaywest",
+        "polandcentral",
+        "qatarcentral",
+        "southafricanorth",
+        "southafricawest",
+        "southcentralus",
+        "southindia",
+        "southeastasia",
+        "spaincentral",
+        "swedencentral",
+        "swedensouth",
+        "switzerlandnorth",
+        "switzerlandwest",
+        "uaecentral",
+        "uaenorth",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westeurope",
+        "westindia",
+        "westus",
+        "westus2",
+        "westus3"
+      ],
+      "enumNames": [
+        "Australia Central (australiacentral)",
+        "Australia Central 2 (australiacentral2)",
+        "Australia East (australiaeast)",
+        "Australia Southeast (australiasoutheast)",
+        "Austria East (austriaeast)",
+        "Belgium Central (belgiumcentral)",
+        "Brazil South (brazilsouth)",
+        "Brazil Southeast (brazilsoutheast)",
+        "Canada Central (canadacentral)",
+        "Canada East (canadaeast)",
+        "Central India (centralindia)",
+        "Central US (centralus)",
+        "Chile Central (chilecentral)",
+        "Denmark East (denmarkeast)",
+        "East Asia (eastasia)",
+        "East US (eastus)",
+        "East US 2 (eastus2)",
+        "France Central (francecentral)",
+        "France South (francesouth)",
+        "Germany North (germanynorth)",
+        "Germany West Central (germanywestcentral)",
+        "Indonesia Central (indonesiacentral)",
+        "Israel Central (israelcentral)",
+        "Italy North (italynorth)",
+        "Japan East (japaneast)",
+        "Japan West (japanwest)",
+        "Jio India Central (jioindiacentral)",
+        "Jio India West (jioindiawest)",
+        "Korea Central (koreacentral)",
+        "Korea South (koreasouth)",
+        "Malaysia West (malaysiawest)",
+        "Mexico Central (mexicocentral)",
+        "New Zealand North (newzealandnorth)",
+        "North Central US (northcentralus)",
+        "North Europe (northeurope)",
+        "Norway East (norwayeast)",
+        "Norway West (norwaywest)",
+        "Poland Central (polandcentral)",
+        "Qatar Central (qatarcentral)",
+        "South Africa North (southafricanorth)",
+        "South Africa West (southafricawest)",
+        "South Central US (southcentralus)",
+        "South India (southindia)",
+        "Southeast Asia (southeastasia)",
+        "Spain Central (spaincentral)",
+        "Sweden Central (swedencentral)",
+        "Sweden South (swedensouth)",
+        "Switzerland North (switzerlandnorth)",
+        "Switzerland West (switzerlandwest)",
+        "UAE Central (uaecentral)",
+        "UAE North (uaenorth)",
+        "UK South (uksouth)",
+        "UK West (ukwest)",
+        "West Central US (westcentralus)",
+        "West Europe (westeurope)",
+        "West India (westindia)",
+        "West US (westus)",
+        "West US 2 (westus2)",
+        "West US 3 (westus3)"
+      ]
+    },
+    "vm_size": {
+      "title": "VM size",
+      "type": "string",
+      "description": "VM size. Must support Trusted Launch (Gen2).",
+      "default": "Standard_B2s_v2",
+      "enum": [
+        "Standard_B1s",
+        "Standard_B2s_v2",
+        "Standard_B2ms",
+        "Standard_B4s_v2",
+        "Standard_D2s_v5",
+        "Standard_D4s_v5",
+        "Standard_D8s_v5",
+        "Standard_D2as_v5",
+        "Standard_D4as_v5",
+        "Standard_E2s_v5",
+        "Standard_E4s_v5",
+        "Standard_F2s_v2",
+        "Standard_F4s_v2"
+      ],
+      "enumNames": [
+        "B1s (1 vCPU, 1 GiB)",
+        "B2s v2 (2 vCPU, 8 GiB)",
+        "B2ms (2 vCPU, 8 GiB)",
+        "B4s v2 (4 vCPU, 16 GiB)",
+        "D2s v5 (2 vCPU, 8 GiB)",
+        "D4s v5 (4 vCPU, 16 GiB)",
+        "D8s v5 (8 vCPU, 32 GiB)",
+        "D2as v5 (2 vCPU, 8 GiB, AMD)",
+        "D4as v5 (4 vCPU, 16 GiB, AMD)",
+        "E2s v5 (2 vCPU, 16 GiB, memory optimized)",
+        "E4s v5 (4 vCPU, 32 GiB, memory optimized)",
+        "F2s v2 (2 vCPU, 4 GiB, compute optimized)",
+        "F4s v2 (4 vCPU, 8 GiB, compute optimized)"
+      ]
+    },
+    "ssh_public_key": {
+      "title": "SSH public key",
+      "type": "string",
+      "description": "SSH public key for the admin user. Password login is disabled."
+    },
+    "advanced_settings": {
+      "type": "object",
+      "properties": {
+        "show_advanced_settings": {
+          "type": "boolean",
+          "title": "Show advanced settings",
+          "default": false
+        }
+      },
+      "dependencies": {
+        "show_advanced_settings": {
+          "oneOf": [
+            {
+              "properties": {
+                "show_advanced_settings": {
+                  "enum": [
+                    false
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "show_advanced_settings": {
+                  "enum": [
+                    true
+                  ]
+                },
+                "vnet_cidr": {
+                  "title": "VNet cidr",
+                  "type": "string",
+                  "description": "Address space of the VNet",
+                  "default": "10.0.0.0/16"
+                },
+                "admin_username": {
+                  "title": "Admin username",
+                  "type": "string",
+                  "description": "Admin user on the VM",
+                  "default": "azureuser"
+                },
+                "enable_public_ip": {
+                  "title": "Enable public ip",
+                  "type": "boolean",
+                  "description": "Attach a Standard public IP to the VM",
+                  "default": false
+                },
+                "allowed_ingress_cidrs": {
+                  "title": "Allowed ingress cidrs",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "IPv4 CIDRs allowed to reach the VM when the public IP is enabled. Open to everyone by default.",
+                  "default": [
+                    "0.0.0.0/0"
+                  ]
+                },
+                "allowed_ingress_ports": {
+                  "title": "Allowed ingress ports",
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "description": "TCP ports opened for allowed_ingress_cidrs when the public IP is enabled",
+                  "default": [
+                    22
+                  ]
+                },
+                "encryption_at_host_enabled": {
+                  "title": "Encryption at host enabled",
+                  "type": "boolean",
+                  "description": "Encrypt temp disk and caches on the host. Needs the EncryptionAtHost feature registered in the subscription.",
+                  "default": false
+                },
+                "tags": {
+                  "title": "Tags",
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Additional tags for all resources",
+                  "default": {}
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "title": "Azure Virtual Machine (Linux)"
+}
