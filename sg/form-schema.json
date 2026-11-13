@@ -4,17 +4,16 @@
     "ssh_public_key"
   ],
   "properties": {
+    "ssh_public_key": {
+      "type": "string"
+    },
     "name_prefix": {
-      "title": "Name prefix",
       "type": "string",
-      "description": "Prefix for all resource names",
       "default": "demo",
       "pattern": "^[a-z][a-z0-9-]{1,15}$"
     },
     "location": {
-      "title": "Location",
       "type": "string",
-      "description": "Azure location",
       "default": "germanywestcentral",
       "enum": [
         "australiacentral",
@@ -140,9 +139,7 @@
       ]
     },
     "vm_size": {
-      "title": "VM size",
       "type": "string",
-      "description": "VM size. Must support Trusted Launch (Gen2).",
       "default": "Standard_B2s_v2",
       "enum": [
         "Standard_B1s",
@@ -175,17 +172,11 @@
         "F4s v2 (4 vCPU, 8 GiB, compute optimized)"
       ]
     },
-    "ssh_public_key": {
-      "title": "SSH public key",
-      "type": "string",
-      "description": "SSH public key for the admin user. Password login is disabled."
-    },
     "advanced_settings": {
       "type": "object",
       "properties": {
         "show_advanced_settings": {
           "type": "boolean",
-          "title": "Show advanced settings",
           "default": false
         }
       },
@@ -199,7 +190,8 @@
                     false
                   ]
                 }
-              }
+              },
+              "required": []
             },
             {
               "properties": {
@@ -263,12 +255,15 @@
                   "description": "Additional tags for all resources",
                   "default": {}
                 }
-              }
+              },
+              "required": []
             }
           ]
         }
-      }
+      },
+      "required": []
     }
   },
-  "title": "Azure Virtual Machine (Linux)"
+  "title": "Azure Virtual Machine (Linux)",
+  "dependencies": {}
 }
