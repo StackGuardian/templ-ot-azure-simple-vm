@@ -35,13 +35,13 @@ variable "ssh_public_key" {
 variable "advanced_settings" {
   description = "Settings most deployments keep at their defaults"
   type = object({
-    vnet_cidr                  = optional(string, "10.0.0.0/16")       # Address space of the VNet
-    admin_username             = optional(string, "azureuser")         # Admin user on the VM
-    enable_public_ip           = optional(bool, false)                 # Attach a Standard public IP to the VM
-    allowed_ingress_cidrs      = optional(list(string), ["0.0.0.0/0"]) # IPv4 CIDRs allowed to reach the VM when the public IP is enabled
-    allowed_ingress_ports      = optional(list(number), [22])          # TCP ports opened for allowed_ingress_cidrs when the public IP is enabled
-    encryption_at_host_enabled = optional(bool, false)                 # Needs the EncryptionAtHost feature registered in the subscription
-    tags                       = optional(map(string), {})             # Additional tags for all resources
+    vnet_cidr                  = optional(string, "10.0.0.0/16") # Address space of the VNet
+    admin_username             = optional(string, "azureuser")   # Admin user on the VM
+    enable_public_ip           = optional(bool, false)           # Attach a Standard public IP to the VM
+    allowed_ingress_cidrs      = optional(list(string), [])      # IPv4 CIDRs allowed to reach the VM when the public IP is enabled
+    allowed_ingress_ports      = optional(list(number), [22])    # TCP ports opened for allowed_ingress_cidrs when the public IP is enabled
+    encryption_at_host_enabled = optional(bool, false)           # Needs the EncryptionAtHost feature registered in the subscription
+    tags                       = optional(map(string), {})       # Additional tags for all resources
   })
   default  = {}
   nullable = false
@@ -54,6 +54,11 @@ variable "advanced_settings" {
   validation {
     condition     = alltrue([for c in var.advanced_settings.allowed_ingress_cidrs : can(cidrnetmask(c))])
     error_message = "All entries in allowed_ingress_cidrs must be valid IPv4 CIDR blocks."
+  }
+
+  validation {
+    condition     = alltrue([for c in var.advanced_settings.allowed_ingress_cidrs : try(tonumber(split("/", c)[1]) >= 8, false)])
+    error_message = "CIDRs broader than /8, such as 0.0.0.0/0, are not allowed."
   }
 
   validation {

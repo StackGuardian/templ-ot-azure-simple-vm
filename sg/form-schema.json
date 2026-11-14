@@ -224,10 +224,8 @@
                   "items": {
                     "type": "string"
                   },
-                  "description": "IPv4 CIDRs allowed to reach the VM when the public IP is enabled. Open to everyone by default.",
-                  "default": [
-                    "0.0.0.0/0"
-                  ]
+                  "description": "IPv4 CIDRs allowed to reach the VM when the public IP is enabled. Required in that case. 0.0.0.0/0 and ranges broader than /8 are rejected.",
+                  "default": []
                 },
                 "allowed_ingress_ports": {
                   "title": "Allowed ingress ports",
