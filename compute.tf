@@ -9,6 +9,7 @@ resource "azurerm_public_ip" "this" {
   tags                = local.tags
 }
 
+#trivy:ignore:AVD-AZU-0068 The network security group is associated with the subnet
 resource "azurerm_network_interface" "vm" {
   #checkov:skip=CKV_AZURE_119:Public IP is opt-in via enable_public_ip and limited to allowed_ingress_cidrs
   #checkov:skip=CKV2_AZURE_39:Public IP is opt-in, serial console needs boot diagnostics and Azure RBAC
