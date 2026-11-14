@@ -34,7 +34,7 @@ Use it when you need one VM for a test, a demo or a small tool.
 | VNet cidr | IP range of the new network | `10.0.0.0/16` |
 | Admin username | Name of the admin user on the VM | `azureuser` |
 | Enable public ip | Gives the VM a public IP | off |
-| Allowed ingress cidrs | IP ranges that may connect when the public IP is on | `0.0.0.0/0` (everyone) |
+| Allowed ingress cidrs | IP ranges that may connect when the public IP is on. Required in that case. `0.0.0.0/0` and ranges broader than `/8` are rejected | empty |
 | Allowed ingress ports | TCP ports opened for those ranges | `22` |
 | Encryption at host enabled | Also encrypts temp disk and caches on the host. Needs the subscription feature | off |
 | Tags | Extra tags added to all resources | none |

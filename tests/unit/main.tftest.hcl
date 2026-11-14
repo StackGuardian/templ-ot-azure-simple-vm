@@ -187,20 +187,29 @@ run "public_ingress_is_restricted" {
 }
 
 # U-09
-run "public_ip_defaults_open_ssh_to_any" {
-  command = apply
+run "open_ingress_cidr_is_rejected" {
+  command = plan
 
   variables {
     advanced_settings = {
-      enable_public_ip = true
+      enable_public_ip      = true
+      allowed_ingress_cidrs = ["0.0.0.0/0"]
     }
   }
 
-  assert {
-    condition = (
-      length(azurerm_network_security_rule.public) == 1 &&
-      alltrue([for r in azurerm_network_security_rule.public : r.source_address_prefix == "0.0.0.0/0" && r.destination_port_range == "22"])
-    )
-    error_message = "With a public IP and default settings, port 22 must be open to 0.0.0.0/0."
+  expect_failures = [var.advanced_settings]
+}
+
+# U-11
+run "ingress_cidr_broader_than_slash_8_is_rejected" {
+  command = plan
+
+  variables {
+    advanced_settings = {
+      enable_public_ip      = true
+      allowed_ingress_cidrs = ["128.0.0.0/1"]
+    }
   }
+
+  expect_failures = [var.advanced_settings]
 }
