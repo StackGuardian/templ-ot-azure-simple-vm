@@ -30,7 +30,7 @@ stages:
 
 .tofu:
   image:
-    name: registry.mm-homelab.org/images/ci-opentofu:latest
+    name: ${CI_REGISTRY}/images/ci-opentofu:latest
     entrypoint: [""]
 
 fmt:
@@ -42,7 +42,7 @@ fmt:
 tflint:
   stage: lint
   image:
-    name: registry.mm-homelab.org/images/ci-tflint:latest
+    name: ${CI_REGISTRY}/images/ci-tflint:latest
     entrypoint: [""]
   cache:
     key: tflint-plugins
@@ -82,7 +82,7 @@ checkov:
   extends: .full_checks
   stage: validate
   image:
-    name: registry.mm-homelab.org/images/ci-checkov:latest
+    name: ${CI_REGISTRY}/images/ci-checkov:latest
     entrypoint: [""]
   script:
     - checkov --directory . --framework terraform --skip-path tests --compact --quiet
