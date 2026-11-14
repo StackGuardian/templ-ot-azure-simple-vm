@@ -31,7 +31,7 @@ flowchart LR
 - Managed disks encrypted at rest with platform-managed keys. Encryption at host is optional (`encryption_at_host_enabled`)
 - VM extensions disabled
 - Default: no public IP, no inbound NSG rules, no default outbound internet access
-- Public IP only on opt-in. Inbound traffic is limited to `allowed_ingress_cidrs` and `allowed_ingress_ports`, by default port 22 from `0.0.0.0/0`. Limit the CIDRs for anything beyond a short demo
+- Public IP only on opt-in. Inbound traffic is limited to `allowed_ingress_cidrs` and `allowed_ingress_ports` (default port 22). `allowed_ingress_cidrs` is required with a public IP, and `0.0.0.0/0` and ranges broader than `/8` are rejected
 
 Accepted checkov findings (documented inline in the code):
 
@@ -79,7 +79,7 @@ ssh azureuser@<public_ip>
 | `vnet_cidr` | Address space of the VNet | `"10.0.0.0/16"` |
 | `admin_username` | Admin user | `"azureuser"` |
 | `enable_public_ip` | Attach a Standard public IP | `false` |
-| `allowed_ingress_cidrs` | Allowed source CIDRs, at least one with a public IP | `["0.0.0.0/0"]` |
+| `allowed_ingress_cidrs` | Allowed source CIDRs, required with a public IP, `/0` and ranges broader than `/8` rejected | `[]` |
 | `allowed_ingress_ports` | Opened TCP ports | `[22]` |
 | `encryption_at_host_enabled` | Encryption at host (needs the subscription feature) | `false` |
 | `tags` | Additional tags for all resources | `{}` |

@@ -27,8 +27,9 @@ tofu test -test-directory=tests/integration   # needs cloud credentials
 | U-06 | Unit | Trusted Launch (Secure Boot and vTPM) is enabled | done |
 | U-07 | Unit | VM has a system-assigned managed identity | done |
 | U-08 | Unit | `enable_public_ip = true` with an empty `allowed_ingress_cidrs` is rejected | done |
-| U-09 | Unit | With public IP and defaults: port 22 is open to `0.0.0.0/0` | done |
+| U-09 | Unit | `allowed_ingress_cidrs` containing `0.0.0.0/0` is rejected | done |
 | U-10 | Unit | With public IP enabled: Standard public IP, NSG allows only the given CIDRs and ports | done |
+| U-11 | Unit | `allowed_ingress_cidrs` broader than `/8` (for example `128.0.0.0/1`) is rejected | done |
 | I-01 | Integration | Default deployment has no public IP | done |
 | I-02 | Integration | VM power state is `running` | done |
 | I-03 | Integration | With `enable_public_ip = true`: public IP output is set | done |
