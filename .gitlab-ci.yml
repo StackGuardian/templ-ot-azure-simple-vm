@@ -6,6 +6,7 @@
 
 variables:
   GLAB_VERSION: "v1.127.0"
+  TRIVY_VERSION: "0.76.2"
 
 workflow:
   rules:
@@ -86,6 +87,15 @@ checkov:
     entrypoint: [""]
   script:
     - checkov --directory . --framework terraform --skip-path tests --compact --quiet
+
+trivy:
+  extends: .full_checks
+  stage: validate
+  image:
+    name: aquasec/trivy:$TRIVY_VERSION
+    entrypoint: [""]
+  script:
+    - trivy config --exit-code 1 --skip-dirs tests .
 
 unit-tests:
   extends: [.tofu, .full_checks]
