@@ -39,7 +39,7 @@ Use it when you need one VM for a test, a demo or a small tool.
 | Encryption at host enabled | Also encrypts temp disk and caches on the host. Needs the subscription feature | off |
 | Tags | Extra tags added to all resources | none |
 
-**Important:** with the public IP switched on and the default ranges, SSH (port 22) is open to the whole internet. For anything beyond a short demo, enter your own IP range under Allowed ingress cidrs.
+**Important:** with the public IP switched on you must enter at least one IP range under Allowed ingress cidrs, otherwise the run fails. Use your own IP range, for example `203.0.113.10/32`. Without a public IP, the VM is reachable only from inside the network.
 
 ## After the run
 
