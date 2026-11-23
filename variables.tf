@@ -26,8 +26,8 @@ variable "ssh_public_key" {
   type        = string
 
   validation {
-    condition     = can(regex("^(ssh-(rsa|ed25519)|ecdsa-sha2-nistp[0-9]+) ", var.ssh_public_key))
-    error_message = "Must be an OpenSSH public key, for example ssh-ed25519 AAAA..."
+    condition     = can(regex("^ssh-(rsa|ed25519) ", var.ssh_public_key))
+    error_message = "Use an RSA or ED25519 public key, for example ssh-ed25519 AAAA... Azure does not accept other key types."
   }
 }
 
@@ -49,6 +49,12 @@ variable "advanced_settings" {
   validation {
     condition     = can(cidrnetmask(var.advanced_settings.vnet_cidr))
     error_message = "vnet_cidr must be a valid IPv4 CIDR block."
+  }
+
+  # The subnet is 8 bits smaller than the VNet.
+  validation {
+    condition     = try(tonumber(split("/", var.advanced_settings.vnet_cidr)[1]) >= 16 && tonumber(split("/", var.advanced_settings.vnet_cidr)[1]) <= 20, false)
+    error_message = "Use a VNet CIDR with a prefix length between /16 and /20, so that the subnet is at least a /28."
   }
 
   validation {

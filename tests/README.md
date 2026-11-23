@@ -32,6 +32,8 @@ tofu test -test-directory=tests/integration   # needs cloud credentials
 | U-09 | Unit | `allowed_ingress_cidrs` containing `0.0.0.0/0` is rejected | done |
 | U-10 | Unit | With public IP enabled: Standard public IP, NSG allows only the given CIDRs and ports | done |
 | U-11 | Unit | `allowed_ingress_cidrs` broader than `/8` (for example `128.0.0.0/1`) is rejected | done |
+| U-12 | Unit | An ECDSA `ssh_public_key` is rejected (Azure accepts only RSA and ED25519) | done |
+| U-13 | Unit | An `advanced_settings.vnet_cidr` with a prefix length outside /16 to /20 is rejected | done |
 | I-01 | Integration | Default deployment has no public IP | done |
 | I-02 | Integration | VM power state is `running` | done |
 | I-03 | Integration | With `enable_public_ip = true`: public IP output is set | done |

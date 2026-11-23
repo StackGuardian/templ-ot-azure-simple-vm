@@ -5,7 +5,9 @@
   ],
   "properties": {
     "ssh_public_key": {
-      "type": "string"
+      "type": "string",
+      "description": "RSA or ED25519 public key, for example ssh-ed25519 AAAA...",
+      "pattern": "^ssh-(rsa|ed25519) .+$"
     },
     "name_prefix": {
       "type": "string",
@@ -181,7 +183,7 @@
                 "vnet_cidr": {
                   "title": "VNet cidr",
                   "type": "string",
-                  "description": "Address space of the VNet",
+                  "description": "Address space of the VNet. Prefix length between /16 and /20",
                   "default": "10.0.0.0/16"
                 },
                 "admin_username": {

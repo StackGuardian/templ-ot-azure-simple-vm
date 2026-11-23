@@ -213,3 +213,27 @@ run "ingress_cidr_broader_than_slash_8_is_rejected" {
 
   expect_failures = [var.advanced_settings]
 }
+
+# U-12
+run "ecdsa_ssh_key_is_rejected" {
+  command = plan
+
+  variables {
+    ssh_public_key = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMockKey"
+  }
+
+  expect_failures = [var.ssh_public_key]
+}
+
+# U-13
+run "vnet_cidr_outside_16_to_20_is_rejected" {
+  command = plan
+
+  variables {
+    advanced_settings = {
+      vnet_cidr = "10.0.0.0/24"
+    }
+  }
+
+  expect_failures = [var.advanced_settings]
+}
