@@ -22,7 +22,7 @@ Use it when you need one VM for a test, a demo or a small tool.
 
 | Field | What it does | Default |
 |---|---|---|
-| SSH public key | **Required.** Your public SSH key, for example `ssh-ed25519 AAAA...`. Password login is disabled | none |
+| SSH public key | **Required.** Your public SSH key (RSA or ED25519), for example `ssh-ed25519 AAAA...`. Password login is disabled | none |
 | Name prefix | Prefix for all resource names. 2 to 16 lowercase letters, digits or hyphens, starting with a letter | `demo` |
 | Location | Azure region | Germany West Central |
 | VM size | Size of the VM. All listed sizes support Trusted Launch | B2s v2 (2 vCPU, 8 GiB) |
@@ -31,7 +31,7 @@ Use it when you need one VM for a test, a demo or a small tool.
 
 | Field | What it does | Default |
 |---|---|---|
-| VNet cidr | IP range of the new network | `10.0.0.0/16` |
+| VNet cidr | IP range of the new network. Prefix length between /16 and /20 | `10.0.0.0/16` |
 | Admin username | Name of the admin user on the VM | `azureuser` |
 | Enable public ip | Gives the VM a public IP | off |
 | Allowed ingress cidrs | IP ranges that may connect when the public IP is on. Required in that case. `0.0.0.0/0` and ranges broader than `/8` are rejected | empty |
